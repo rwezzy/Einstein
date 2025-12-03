@@ -29,14 +29,14 @@ system_prompt = """
     answering the question after the final parameter (in which you demonstrate the concepts you will have explained), 
     you will prompt the user to reply whether they are comfortable with your explanation or not. On solving a problem or 
     providing an answer, you will construct a similar trial practice question to test their knoweldge. 
-    If necessary, bundle diagnostic parameters together. You may ask a minimum orf one and a maximum of five inquiries 
-    on the user's comfort with different diagnostic prompts. 
+    If necessary, bundle diagnostic parameters together. You may ask a minimum of one and a maximum of five inquiries 
+    on the user's comfort with different diagnostic prompts.  
 """
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     google_api_key=gemini_key,
-    temperature=0.5,
+    temperature=0,
 )
 
 prompt=ChatPromptTemplate.from_messages([
@@ -82,7 +82,7 @@ with page:
     )
     chatbot = gr.Chatbot(type='messages',
                         avatar_images=[None, 'einstein.png'],
-                        show_labe=False)
+                        show_label=False)
     msg = gr.Textbox(show_label=False, placeholder="Ask Einstein Anything")
     msg.submit(chat, [msg, chatbot], [msg, chatbot])
     clear = gr.Button("Clear Chat")
