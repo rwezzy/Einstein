@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import gradio as gr
+import time
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import chain
@@ -50,10 +51,10 @@ chat_chain = prompt | llm | StrOutputParser()
 
 print("Hi I am Albert, how can I help you today?")
 
-def chat(user_prompt, history): #this will use as input the values of the list in the (gradiotextboxvariable).submit method.
-    print(user_prompt, history)
-    langchain_history = []
-    for dialog in langchain_history: #the list of dictionaries; each with the roles and content as key value pairs, is
+def chat(user_prompt,history): #this will use as input the values of the list in the (gradiotextboxvariable).submit method.
+    print(user_prompt,history)
+    langchain_history=[]
+    for dialog in history: #the list of dictionaries; each with the roles and content as key value pairs, is
         # iterated over. The dictionary pairs alternate between those with a user role and those with an assistant role.
         if dialog ['role']=='user': #if the iteration is on a dictionary whose role is user,
             langchain_history.append(HumanMessage(content=dialog['content'])) #the content of this dictionary is
@@ -61,7 +62,14 @@ def chat(user_prompt, history): #this will use as input the values of the list i
             # This dictionary will provide the referenced value to a content parameter in the HumanMessage class constr.
         elif dialog['role']=='assistant':
             langchain_history.append(AIMessage(content=dialog['content']))
+
+    start_time = time.time()
     response = chat_chain.invoke({"input": user_prompt, "history": langchain_history})
+    stop_time = time.time()
+    latency = stop_time - start_time
+
+    print (f"Einstein took {latency:.2f} seconds to reply")
+
     return "", history + [{'role':'user', 'content':user_prompt},
                             {'role':'assistant', 'content':response}]
 
